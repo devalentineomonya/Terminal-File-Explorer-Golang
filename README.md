@@ -48,7 +48,21 @@ go build -o filebrowser *.go
 ./filebrowser
 ```
 
+### Using Docker
+
+```bash
+# Build the Docker image
+docker build -t filebrowser .
+
+# Run the container with the current directory mounted
+docker run -it -v $(pwd):/app filebrowser
+```
+
+**Note:** The `-v $(pwd):/app` flag mounts your current host directory into the container's `/app` directory, allowing the application to browse your local files.
+
 ## Dependencies
 
-- github.com/gdamore/tcell/v2: Terminal cell library
-- github.com/mattn/go-runewidth: String width calculation
+- `github.com/gdamore/tcell/v2`: Terminal cell library
+- `github.com/mattn/go-runewidth`: String width calculation
+
+Docker-based usage requires [Docker](https://www.docker.com/) to be installed.
