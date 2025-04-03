@@ -8,7 +8,6 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
-// Application state
 type App struct {
 	screen       tcell.Screen
 	currentDir   string
@@ -34,8 +33,7 @@ func newApp() (*App, error) {
 
 	width, height := screen.Size()
 
-	// Get current directory
-	currentDir, err := os.Getwd()
+	currentDir, err :=os.Getwd()
 	if err != nil {
 		return nil, err
 	}
@@ -69,18 +67,14 @@ func (a *App) handleResize() {
 }
 
 func (a *App) run() {
-	// Hide cursor
 	a.screen.HideCursor()
 
-	// Event loop
 	for {
 		a.handleResize()
 		a.draw()
 
-		// Poll event
 		ev := a.screen.PollEvent()
 
-		// Process event
 		switch ev := ev.(type) {
 		case *tcell.EventResize:
 			a.screen.Sync()
@@ -101,34 +95,32 @@ func (a *App) run() {
 			case tcell.KeyEnter:
 				a.handleEnter()
 			case tcell.KeyRune:
-				// Vim-like key bindings
 				switch ev.Rune() {
 				case 'q', 'e':
 					return
-				case 'j': // Down
+				case 'j':
 					a.selected++
 					if a.selected >= len(a.contents) {
 						a.selected = len(a.contents) - 1
 					}
-				case 'k': // Up
+				case 'k':
 					a.selected--
 					if a.selected < 0 {
 						a.selected = 0
 					}
-				case 'h': // Left/parent directory
+				case 'h':
 					a.currentDir = filepath.Dir(a.currentDir)
 					a.selected = 0
 					a.shouldRedraw = true
-				case 'l': // Right/enter directory or open file
+				case 'l':
 					a.handleEnter()
-				case 'g': // Go to top
+				case 'g':
 					a.selected = 0
-				case 'G': // Go to bottom
+				case 'G':
 					a.selected = len(a.contents) - 1
-				case '/': // Search functionality could be implemented here
-					// TODO: Implement search
-				case 'c': // Command mode
-					// Command mode functionality could be implemented here
+				case '/':
+
+				case 'c':
 				}
 			}
 		}
@@ -149,16 +141,12 @@ func (a *App) handleEnter() {
 			a.selected = 0
 			a.shouldRedraw = true
 		} else {
-			// Temporarily restore terminal
 			a.screen.Fini()
 
-			// Open file with default application
 			openFile(path)
 
-			// Small delay to let the application start
 			time.Sleep(100 * time.Millisecond)
 
-			// Reinit screen
 			a.screen.Init()
 			a.shouldRedraw = true
 		}
@@ -169,25 +157,20 @@ func (a *App) draw() {
 	if a.shouldRedraw {
 		a.screen.Clear()
 
-		// Draw borders
 		navBorderStyle := tcell.StyleDefault.Foreground(tcell.ColorTeal).Bold(true)
 		a.drawBorder(0, 0, a.leftWidth+2, a.termHeight, navBorderStyle, "Navigation")
 
 		previewBorderStyle := tcell.StyleDefault.Foreground(tcell.ColorTeal).Bold(true)
 		a.drawBorder(a.rightStart, 0, a.rightWidth+2, a.termHeight, previewBorderStyle, "Preview")
 
-		// Get directory contents
 		a.getContents()
 
 		a.shouldRedraw = false
 	}
 
-	// Draw navigation panel
 	a.drawNavigation()
 
-	// Update preview
 	a.updatePreview()
 
-	// Show the result
 	a.screen.Show()
 }
