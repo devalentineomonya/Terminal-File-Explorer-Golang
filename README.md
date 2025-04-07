@@ -1,9 +1,18 @@
-# File Browser: Terminal File Manager  
+# Terminal File Explorer
 
-![Go](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go) ![tcell](https://img.shields.io/badge/tcell-v2-4DD0E1) ![License](https://img.shields.io/badge/License-MIT-blue)  
+![Go](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go) 
+![TUI](https://img.shields.io/badge/TUI-Advanced-4DD0E1?logo=terminal) 
+![Docker](https://img.shields.io/badge/Docker-24.0+-2496ED?logo=docker) 
+![Make](https://img.shields.io/badge/Make-4.3-6C4CAB?logo=gnu-bash) 
+![Homebrew](https://img.shields.io/badge/Homebrew-4.0+-FBB040?logo=homebrew) 
+![Community](https://img.shields.io/badge/Community-Active-2ECC71?logo=github) 
+![License](https://img.shields.io/badge/License-MIT-blue)
 
-![TUI Screenshot](https://via.placeholder.com/800x400.png?text=Terminal+File+Browser+Screenshot+with+Dual+Panels)  
+![TUI Screenshot](https://raw.githubusercontent.com/devalentineomonya/Terminal-File-Explorer-Golang/main/.github/screenshot.png)  
 *A Vim-inspired terminal file manager with modern UX/UI components*
+
+[![GitHub stars](https://img.shields.io/github/stars/devalentineomonya/Terminal-File-Explorer-Golang?style=social)](https://github.com/devalentineomonya/Terminal-File-Explorer-Golang/stargazers)
+[![GitHub release](https://img.shields.io/github/v/release/devalentineomonya/Terminal-File-Explorer-Golang)](https://github.com/devalentineomonya/Terminal-File-Explorer-Golang/releases)
 
 ## ✨ Key Features  
 
@@ -13,138 +22,91 @@
 - Right panel: File previews (text/images) & metadata  
 
 🎮 **Vim-Style Controls**  
-- Muscle-memory friendly keybindings  
+- Muscle-memory friendly keybindings (hjkl navigation)  
 - Mode switching (normal/visual/command)  
 
-### Visual Design  
-🎨 **Modern TUI Elements**  
-- Color-coded file types (configs/media/binaries)  
-- Custom glyphs for different file formats  
-- Responsive layout for terminal resizing  
+### Deployment Options  
+🐋 **Containerized**  
+- Pre-built Docker images with Alpine base  
+- Volume mounting support  
 
-⚡ **Performance**  
-- Instant directory traversal (50k+ files/sec)  
-- Async file preview loading  
-- 5ms input response time  
-
-### Advanced Operations  
-🔍 **Fuzzy Search**  
-- Ctrl+F for instant file search  
-- Real-time filtering with scoring  
-
-📦 **Batch Operations**  
-- Multi-select file management  
-- Background copy/move operations  
-
-## 🛠 Tech Stack  
-
-- **Language**: Go 1.21+  
-- **UI Framework**: tcell v2  
-- **Dependencies**:  
-  - `go-runewidth` (Unicode handling)  
-  - `bubbletea` (TUI components)  
-- **Packaging**: Docker, Deb/RPM packages  
+🍺 **Homebrew Ready**  
+- Single-command installation for macOS/Linux  
+- Automatic updates via brew  
 
 ## 🚀 Quick Start  
-
-### Prerequisites  
-- Terminal with 256-color support  
-- Go 1.21+ (for source builds)  
 
 ### Installation  
 
 ```bash  
-# Via Docker  
-docker run -it --rm -v $PWD:/data ghcr.io/yourorg/filebrowser:latest  
+# Via Docker
+docker run -it --rm -v $PWD:/data ghcr.io/devalentineomonya/terminal-file-explorer:latest
 
-# From Source  
-git clone https://github.com/yourorg/filebrowser.git  
-cd filebrowser && make install  
+# Homebrew 
+brew tap devalentineomonya/tools
+brew install terminal-file-explorer
 
-# Homebrew  
-brew tap yourorg/tools  
-brew install filebrowser  
-```  
+# From Source
+git clone https://github.com/devalentineomonya/Terminal-File-Explorer-Golang.git
+cd Terminal-File-Explorer-Golang
+make build && make install
+```
 
-## ⌨️ Navigation Reference  
+### Make Commands  
+```makefile
+build    # Compile binary
+install  # Install system-wide
+docker   # Build Docker image
+clean    # Remove build artifacts
+run      # Start in dev mode
+```
 
-| Mode       | Key Binding       | Action                      |  
-|------------|-------------------|-----------------------------|  
-| **Normal** | `j`/`k`          | Vertical navigation         |  
-|            | `h`/`l`          | Directory traversal         |  
-|            | `gg`/`G`         | Top/Bottom jump             |  
-| **Visual** | `v`              | Start selection             |  
-|            | `y`/`d`          | Copy/Delete selection       |  
-| **Command**| `:`              | Open command palette        |  
+## 🐋 Docker Compose  
 
-![Key Binding Cheatsheet](https://via.placeholder.com/600x200.png?text=Keyboard+Shortcut+Diagram)  
+```yaml
+version: '3.8'
+services:
+  file-explorer:
+    image: ghcr.io/devalentineomonya/terminal-file-explorer:latest
+    volumes:
+      - ./:/workspace
+    environment:
+      - TUI_THEME=dark
+    devices:
+      - /dev/fuse:/dev/fuse
+```
 
-## 🐋 Docker Deployment  
+## 🛠 Development  
 
-```yaml  
-# docker-compose.yml  
-version: '3.8'  
-services:  
-  filebrowser:  
-    image: ghcr.io/yourorg/filebrowser:latest  
-    volumes:  
-      - /host/path:/mnt  
-    environment:  
-      - TZ=America/New_York  
-    devices:  
-      - /dev/fuse:/dev/fuse  # For FUSE mounts  
-```  
+```bash
+# Build with Make
+make build
 
-## 🏗 Project Structure  
+# Run tests
+make test
 
-```  
-filebrowser/  
-├── internal/  
-│   ├── ui/           # TUI components  
-│   ├── navigation/   # File system logic  
-│   ├── operations/   # File CRUD operations  
-│   └── config/       # User preferences  
-├── pkg/  
-│   ├── tui/          # Custom widgets  
-│   └── utils/        # Shared utilities  
-├── cmd/  
-│   └── main.go       # Entry point  
-└── Makefile          # Build automation  
-```  
+# Create release builds
+make release
 
-## 🔒 Security  
+# Build Docker image
+make docker
+```
 
-- **File Permissions**: Respects POSIX/ACL rules  
-- **Sandboxing**: Optional containerized mode  
-- **Audit Trail**: `--audit` flag for operation logging  
+## 🌐 Community  
+
+[![GitHub Discussions](https://img.shields.io/badge/Join-Discussions-1DA1F2?logo=github)](https://github.com/devalentineomonya/Terminal-File-Explorer-Golang/discussions) 
+[![Twitter Follow](https://img.shields.io/badge/Follow-@devalentineomonya-1DA1F2?logo=twitter)](https://twitter.com/devalentineomonya)
 
 ## 🛣 Roadmap  
 
-- [ ] SSH/SFTP remote browsing  
-- [ ] Regex-powered search  
-- [ ] File diff viewer  
-- [ ] ZSH/Bash auto-complete  
-- [ ] Thumbnail previews for media  
-
-## 🤝 Contributing  
-
-1. Fork repository  
-2. Create feature branch:  
-   ```bash  
-   git checkout -b feat/awesome-feature  
-   ```  
-3. Implement with Go best practices  
-4. Submit PR with:  
-   - Test coverage ≥80%  
-   - Updated documentation  
-   - Demo GIF/video  
+[![GitHub Milestones](https://img.shields.io/badge/View-Milestones-6C4CAB)](https://github.com/devalentineomonya/Terminal-File-Explorer-Golang/milestones)
 
 ## 📜 License  
 
-MIT License - See [LICENSE](LICENSE) for full text.  
+MIT License - See [LICENSE](https://github.com/devalentineomonya/Terminal-File-Explorer-Golang/blob/main/LICENSE)
 
 ---
 
-**Maintainer**: Your Name (@devalentineomonya)  
-**Release Cadence**: Monthly feature updates  
-**Support**: [valomosh254@gmail.com](mailto:valomosh254@gmail.com)
+**Maintainer**: [Valentine Omonya](https://github.com/devalentineomonya)  
+**Contribute**: [Guidelines](https://github.com/devalentineomonya/Terminal-File-Explorer-Golang/blob/main/CONTRIBUTING.md)  
+**Support**: [Open an Issue](https://github.com/devalentineomonya/Terminal-File-Explorer-Golang/issues/new/choose)
